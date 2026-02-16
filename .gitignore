@@ -1,9 +1,9 @@
 # General
 .DS_Store
+.env*
 
 # Backend
 backend/.venv
-backend/.env
 backend/__pycache__
 backend/*.db*
 
@@ -25,7 +25,6 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/.pnpm-debug.log*
-frontend/.env*
 frontend/.vercel
 frontend/*.tsbuildinfo
 frontend/next-env.d.ts
