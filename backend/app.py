@@ -24,7 +24,7 @@ app = FastAPI(lifespan=lifespan)
 
 class Message(BaseModel):
     type: str
-    content: str
+    content: str | list[dict]
     id: str | None = None
 
 class ThreadInfo(BaseModel):
@@ -36,7 +36,7 @@ class GetThreadsResponse(BaseModel):
     threads: list[ThreadInfo]
 
 class PostThreadRequest(BaseModel):
-    query: str
+    query: str | list[dict]
 
 class PostThreadsResponse(BaseModel):
     thread_id: str
@@ -45,7 +45,7 @@ class GetMessagesResponse(BaseModel):
     messages: list[Message]
 
 class PostMessagesRequest(BaseModel):
-    query: str
+    query: str | list[dict]
 
 class PatchThreadRequest(BaseModel):
     title: str
@@ -107,7 +107,6 @@ async def get_messages(request: Request, thread_id: str, x_guest_id: str = Depen
     state = await agent.aget_state(config={"configurable": {"thread_id": thread_id}})
     messages = []
     for msg in state.values.get("messages", []):
-        print(type(msg), msg)
         if isinstance(msg, HumanMessage):
             messages.append(Message(type="human", content=msg.content, id=msg.id))
         elif isinstance(msg, AIMessage):
@@ -118,7 +117,7 @@ async def get_messages(request: Request, thread_id: str, x_guest_id: str = Depen
 async def chat_endpoint(request: Request, thread_id: str, request_body: PostMessagesRequest, x_guest_id: str = Depends(require_guest_id)):
     agent = request.app.state.agent
     astream_events = agent.astream_events(
-        input={"messages": HumanMessage(request_body.query)},
+        input={"messages": HumanMessage(content=request_body.query)},
         config={"configurable": {"thread_id": thread_id}}
     )
     return StreamingResponse(

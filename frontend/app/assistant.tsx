@@ -1,11 +1,39 @@
 "use client";
 
-import { AssistantRuntimeProvider } from "@assistant-ui/react";
+import { AssistantRuntimeProvider, AttachmentAdapter } from "@assistant-ui/react";
 import { useChatRuntime } from "@assistant-ui/react-ai-sdk";
 import { Thread } from "@/components/assistant-ui/thread";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { useCreateThreadApiThreadsPost, getGetThreadsApiThreadsGetQueryKey } from "@/lib/api/default/default";
 import { useQueryClient } from "@tanstack/react-query";
+
+const vercelAttachmentAdapter: AttachmentAdapter = {
+  accept: "image/*",
+  add: async ({ file }) => {
+    return {
+      id: Math.random().toString(36).substring(7),
+      type: "image",
+      name: file.name,
+      file,
+      contentType: file.type,
+      status: { type: "requires-action", reason: "composer-send" },
+    };
+  },
+  async send(attachment) {
+    const reader = new FileReader();
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(attachment.file);
+    });
+    return {
+      ...attachment,
+      status: { type: "complete" },
+      content: [{ type: "image", image: dataUrl }],
+    };
+  },
+  async remove() { },
+};
 
 export function Assistant({ threadId, messages }: { threadId?: string, messages?: UIMessage[] }) {
   const { mutateAsync: createThread } = useCreateThreadApiThreadsPost();
@@ -38,10 +66,23 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
       },
       prepareSendMessagesRequest: async ({ messages }) => {
         const lastMessage = messages[messages.length - 1];
+        const parts = lastMessage.parts.map((part) => {
+          if (part.type === "text") {
+            return { type: "text", text: part.text };
+          }
+          if ((part.type as any) === "image") {
+            console.log("image", part);
+            return {
+              type: "image_url",
+              image_url: { url: (part as any).image },
+            };
+          }
+          return null;
+        }).filter(Boolean);
+
         return {
           body: {
-            // @ts-ignore
-            query: lastMessage.parts[0].text
+            query: parts.length === 1 && parts[0]!.type === "text" ? (parts[0]! as any).text : parts,
           }
         };
       }
@@ -71,7 +112,8 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
     //     ]
     //   }
     // ]
-    adapters: { // Sucks: https://github.com/assistant-ui/assistant-ui/discussions/2900 
+    adapters: { // Sucks: https://github.com/assistant-ui/assistant-ui/discussions/2900
+      attachments: vercelAttachmentAdapter,
     }
   });
 
