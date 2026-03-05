@@ -4,7 +4,8 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { PostThreadRequestQuery } from './postThreadRequestQuery';
 
 export interface PostThreadRequest {
-  query: string;
+  query: PostThreadRequestQuery;
 }

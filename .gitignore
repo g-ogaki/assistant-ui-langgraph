@@ -1,6 +1,6 @@
 # General
 .DS_Store
-.env*
+.env
 
 # Backend
 backend/.venv

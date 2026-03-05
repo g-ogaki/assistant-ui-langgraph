@@ -4,9 +4,10 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { MessageContent } from './messageContent';
 
 export interface Message {
   type: string;
-  content: string;
+  content: MessageContent;
   id?: string | null;
 }
