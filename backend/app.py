@@ -1,19 +1,16 @@
-from uuid import uuid4
-from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
-from graph import create_graph
 from db import engine, ThreadMetadata
+from graph import create_graph, generate_title
 from utils import langchain_to_vercel_stream
+from uuid import uuid4
+from datetime import datetime
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Header, APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from dotenv import load_dotenv
 from pydantic import BaseModel
 from sqlmodel import select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
-from contextlib import asynccontextmanager
+from langchain.messages import HumanMessage, AIMessage, ToolMessage
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
-from datetime import datetime
-
-load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -76,7 +73,8 @@ async def get_threads(x_guest_id: str = Depends(require_guest_id), session: Asyn
 @app.post("/api/threads", response_model=PostThreadsResponse)
 async def create_thread(request: PostThreadRequest, x_guest_id: str = Depends(require_guest_id), session: AsyncSession = Depends(get_session)):
     thread_id = str(uuid4())
-    thread_metadata = ThreadMetadata(thread_id=thread_id, guest_id=x_guest_id, title=request.query)
+    title = await generate_title(request.query)
+    thread_metadata = ThreadMetadata(thread_id=thread_id, guest_id=x_guest_id, title=title)
     session.add(thread_metadata)
     await session.commit()
     return PostThreadsResponse(thread_id=thread_id)
