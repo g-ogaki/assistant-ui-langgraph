@@ -33,7 +33,6 @@ class Message(BaseModel):
 class ThreadInfo(BaseModel):
     thread_id: str
     title: str
-    created_at: str
 
 class GetThreadsResponse(BaseModel):
     threads: list[ThreadInfo]
@@ -69,8 +68,7 @@ async def get_threads(x_guest_id: str = Depends(require_guest_id), session: Asyn
     return GetThreadsResponse(threads=[
         ThreadInfo(
             thread_id=thread.thread_id,
-            title=thread.title,
-            created_at=thread.created_at.isoformat(),
+            title=thread.title
         ) for thread in threads
     ])
 
