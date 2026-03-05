@@ -4,10 +4,15 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import type { MessageContent } from './messageContent';
+import type { MessageArgs } from './messageArgs';
+import type { MessageType } from './messageType';
 
 export interface Message {
-  type: string;
-  content: MessageContent;
+  type: MessageType;
+  content: string;
   id?: string | null;
+  tool_call_id?: string | null;
+  name?: string | null;
+  args?: MessageArgs;
+  output?: string | null;
 }

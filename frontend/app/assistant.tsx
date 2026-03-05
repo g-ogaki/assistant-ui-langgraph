@@ -7,34 +7,6 @@ import { DefaultChatTransport, UIMessage } from "ai";
 import { useCreateThreadApiThreadsPost, getGetThreadsApiThreadsGetQueryKey, useUpdateThreadApiThreadsThreadIdPut } from "@/lib/api/default/default";
 import { useQueryClient } from "@tanstack/react-query";
 
-// const vercelAttachmentAdapter: AttachmentAdapter = {
-//   accept: "image/*",
-//   add: async ({ file }) => {
-//     return {
-//       id: Math.random().toString(36).substring(7),
-//       type: "image",
-//       name: file.name,
-//       file,
-//       contentType: file.type,
-//       status: { type: "requires-action", reason: "composer-send" },
-//     };
-//   },
-//   async send(attachment) {
-//     const reader = new FileReader();
-//     const dataUrl = await new Promise<string>((resolve, reject) => {
-//       reader.onload = () => resolve(reader.result as string);
-//       reader.onerror = reject;
-//       reader.readAsDataURL(attachment.file);
-//     });
-//     return {
-//       ...attachment,
-//       status: { type: "complete" },
-//       content: [{ type: "image", image: dataUrl }],
-//     };
-//   },
-//   async remove() { },
-// };
-
 export function Assistant({ threadId, messages }: { threadId?: string, messages?: UIMessage[] }) {
   const { mutateAsync: createThread } = useCreateThreadApiThreadsPost();
   const { mutateAsync: updateThread } = useUpdateThreadApiThreadsThreadIdPut();
@@ -43,9 +15,12 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
   const runtime = useChatRuntime({
     transport: new DefaultChatTransport({
       fetch: async (_, options) => {
-        // redirect in new conversation invocation
         let currentThreadId = threadId;
-        if (!currentThreadId) {
+        if (currentThreadId) {
+          // update thread's updated_at
+          await updateThread({ threadId: currentThreadId });
+        } else {
+          // redirect in new conversation invocation
           const bodyData = JSON.parse(options?.body as string);
           await createThread({ data: { query: bodyData.query } }, {
             onSuccess: (response) => {
@@ -54,12 +29,8 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
               }
               currentThreadId = response.data.thread_id;
               window.history.replaceState(null, '', `/thread/${currentThreadId}`);
-
             }
           });
-        } else {
-          // update thread's updated_at
-          await updateThread({ threadId: currentThreadId });
         }
 
         const url = `/api/threads/${currentThreadId}/messages`;
@@ -93,31 +64,9 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
       }
     }),
     messages,
-    // TODO: support tool message
-    // messages: [
-    //   {
-    //     id: 'msg-1',
-    //     role: 'assistant',
-    //     parts: [
-    //       {
-    //         // 1. Define the type (likely 'tool-invocation' or 'tool-call')
-    //         type: 'tool-invocation',
-
-    //         // 2. Helper properties required by the type
-    //         toolCallId: 'call_001',
-    //         toolName: 'weather_tool',
-
-    //         // 3. Current state of the tool
-    //         state: "output-available", // Indicates the tool has finished executing
-
-    //         // 4. Flattened Input/Output (based on your error message)
-    //         input: { city: 'New York' },
-    //         output: { temperature: 72, condition: 'Sunny' }
-    //       }
-    //     ]
-    //   }
-    // ]
     adapters: { // Sucks: https://github.com/assistant-ui/assistant-ui/discussions/2900
+      history: undefined,
+      threadList: undefined,
       attachments: undefined,
     }
   });

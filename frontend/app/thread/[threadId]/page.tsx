@@ -10,7 +10,16 @@ function convertMessage(messages: Message[]): UIMessage[] {
   return messages.map(message => ({
     id: message.id!,
     role: message.type === "human" ? "user" : "assistant",
-    parts: [{ type: "text", text: message.content }]
+    parts: message.type === "tool" ? [{
+      type: `tool-${message.name}`,
+      toolCallId: message.tool_call_id!,
+      state: "output-available",
+      input: message.args,
+      output: message.output,
+    }] : [{
+      type: "text",
+      text: message.content
+    }]
   }))
 }
 

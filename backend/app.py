@@ -4,6 +4,7 @@ from utils import langchain_to_vercel_stream
 from uuid import uuid4
 from datetime import datetime
 from contextlib import asynccontextmanager
+from typing import Literal
 from fastapi import FastAPI, Header, APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -21,9 +22,13 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 class Message(BaseModel):
-    type: str
-    content: str | list[dict]
+    type: Literal["human", "ai", "tool"]
+    content: str
     id: str | None = None
+    tool_call_id: str | None = None
+    name: str | None = None
+    args: dict | None = None
+    output: str | None = None
 
 class ThreadInfo(BaseModel):
     thread_id: str
@@ -66,8 +71,7 @@ async def get_threads(x_guest_id: str = Depends(require_guest_id), session: Asyn
             thread_id=thread.thread_id,
             title=thread.title,
             created_at=thread.created_at.isoformat(),
-        )
-        for thread in threads
+        ) for thread in threads
     ])
 
 @app.post("/api/threads", response_model=PostThreadsResponse)
@@ -101,11 +105,17 @@ async def get_messages(request: Request, thread_id: str, x_guest_id: str = Depen
     agent = request.app.state.agent
     state = await agent.aget_state(config={"configurable": {"thread_id": thread_id}})
     messages = []
+    tool_calls = {}
     for msg in state.values.get("messages", []):
-        if isinstance(msg, HumanMessage):
-            messages.append(Message(type="human", content=msg.content, id=msg.id))
-        elif isinstance(msg, AIMessage):
-            messages.append(Message(type="ai", content=msg.content, id=msg.id))
+        if msg.type == "ai" and msg.tool_calls:
+            for tc in msg.tool_calls:
+                tool_calls[tc["id"]] = tc
+        elif msg.type == "tool":
+            if msg.tool_call_id in tool_calls:
+                tc = tool_calls.pop(msg.tool_call_id)
+                messages.append(Message(type="tool", content="", id=msg.id, tool_call_id=msg.tool_call_id, name=tc["name"], args=tc["args"], output=msg.content))
+        else:
+            messages.append(Message(type=msg.type, content=msg.content, id=msg.id))
     return GetMessagesResponse(messages=messages)
 
 @app.post("/api/threads/{thread_id}/messages")
