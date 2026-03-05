@@ -11,6 +11,7 @@ from sqlmodel import select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 from contextlib import asynccontextmanager
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from datetime import datetime
 
 load_dotenv()
 
@@ -47,9 +48,6 @@ class GetMessagesResponse(BaseModel):
 class PostMessagesRequest(BaseModel):
     query: str | list[dict]
 
-class PatchThreadRequest(BaseModel):
-    title: str
-
 async def require_guest_id(x_guest_id: str = Header(...)):
     if not x_guest_id:
         raise HTTPException(status_code=400, detail="x-guest-id header invalid")
@@ -65,7 +63,7 @@ def health_check():
 
 @app.get("/api/threads")
 async def get_threads(x_guest_id: str = Depends(require_guest_id), session: AsyncSession = Depends(get_session)):
-    threads = await session.exec(select(ThreadMetadata).where(ThreadMetadata.guest_id == x_guest_id).order_by(ThreadMetadata.created_at.desc()))
+    threads = await session.exec(select(ThreadMetadata).where(ThreadMetadata.guest_id == x_guest_id).order_by(ThreadMetadata.updated_at.desc()))
     return GetThreadsResponse(threads=[
         ThreadInfo(
             thread_id=thread.thread_id,
@@ -83,13 +81,12 @@ async def create_thread(request: PostThreadRequest, x_guest_id: str = Depends(re
     await session.commit()
     return PostThreadsResponse(thread_id=thread_id)
 
-@app.patch("/api/threads/{thread_id}")
-async def rename_thread(thread_id: str, request: PatchThreadRequest, x_guest_id: str = Depends(require_guest_id), session: AsyncSession = Depends(get_session)):
+@app.put("/api/threads/{thread_id}")
+async def update_thread(thread_id: str, request: Request, x_guest_id: str = Depends(require_guest_id), session: AsyncSession = Depends(get_session)):
     thread = await session.get(ThreadMetadata, thread_id)
     if not thread:
         raise HTTPException(status_code=404, detail="Thread not found")
-    thread.title = request.title
-    session.add(thread)
+    thread.updated_at = datetime.now()
     await session.commit()
     return {"status": "ok"}
 

@@ -4,39 +4,40 @@ import { AssistantRuntimeProvider, AttachmentAdapter } from "@assistant-ui/react
 import { useChatRuntime } from "@assistant-ui/react-ai-sdk";
 import { Thread } from "@/components/assistant-ui/thread";
 import { DefaultChatTransport, UIMessage } from "ai";
-import { useCreateThreadApiThreadsPost, getGetThreadsApiThreadsGetQueryKey } from "@/lib/api/default/default";
+import { useCreateThreadApiThreadsPost, getGetThreadsApiThreadsGetQueryKey, useUpdateThreadApiThreadsThreadIdPut } from "@/lib/api/default/default";
 import { useQueryClient } from "@tanstack/react-query";
 
-const vercelAttachmentAdapter: AttachmentAdapter = {
-  accept: "image/*",
-  add: async ({ file }) => {
-    return {
-      id: Math.random().toString(36).substring(7),
-      type: "image",
-      name: file.name,
-      file,
-      contentType: file.type,
-      status: { type: "requires-action", reason: "composer-send" },
-    };
-  },
-  async send(attachment) {
-    const reader = new FileReader();
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(attachment.file);
-    });
-    return {
-      ...attachment,
-      status: { type: "complete" },
-      content: [{ type: "image", image: dataUrl }],
-    };
-  },
-  async remove() { },
-};
+// const vercelAttachmentAdapter: AttachmentAdapter = {
+//   accept: "image/*",
+//   add: async ({ file }) => {
+//     return {
+//       id: Math.random().toString(36).substring(7),
+//       type: "image",
+//       name: file.name,
+//       file,
+//       contentType: file.type,
+//       status: { type: "requires-action", reason: "composer-send" },
+//     };
+//   },
+//   async send(attachment) {
+//     const reader = new FileReader();
+//     const dataUrl = await new Promise<string>((resolve, reject) => {
+//       reader.onload = () => resolve(reader.result as string);
+//       reader.onerror = reject;
+//       reader.readAsDataURL(attachment.file);
+//     });
+//     return {
+//       ...attachment,
+//       status: { type: "complete" },
+//       content: [{ type: "image", image: dataUrl }],
+//     };
+//   },
+//   async remove() { },
+// };
 
 export function Assistant({ threadId, messages }: { threadId?: string, messages?: UIMessage[] }) {
   const { mutateAsync: createThread } = useCreateThreadApiThreadsPost();
+  const { mutateAsync: updateThread } = useUpdateThreadApiThreadsThreadIdPut();
   const queryClient = useQueryClient();
 
   const runtime = useChatRuntime({
@@ -53,15 +54,19 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
               }
               currentThreadId = response.data.thread_id;
               window.history.replaceState(null, '', `/thread/${currentThreadId}`);
-              queryClient.invalidateQueries({
-                queryKey: getGetThreadsApiThreadsGetQueryKey(),
-              });
+
             }
           });
+        } else {
+          // update thread's updated_at
+          await updateThread({ threadId: currentThreadId });
         }
 
         const url = `/api/threads/${currentThreadId}/messages`;
         const response = await fetch(url, options);
+        queryClient.invalidateQueries({
+          queryKey: getGetThreadsApiThreadsGetQueryKey(),
+        });
         return response;
       },
       prepareSendMessagesRequest: async ({ messages }) => {
@@ -113,7 +118,7 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
     //   }
     // ]
     adapters: { // Sucks: https://github.com/assistant-ui/assistant-ui/discussions/2900
-      attachments: vercelAttachmentAdapter,
+      attachments: undefined,
     }
   });
 

@@ -26,7 +26,6 @@ import type {
 import type {
   GetMessagesResponse,
   HTTPValidationError,
-  PatchThreadRequest,
   PostMessagesRequest,
   PostThreadRequest,
   PostThreadsResponse
@@ -371,28 +370,28 @@ export const useCreateThreadApiThreadsPost = <TError = HTTPValidationError,
       return useMutation(getCreateThreadApiThreadsPostMutationOptions(options), queryClient);
     }
     /**
- * @summary Rename Thread
+ * @summary Update Thread
  */
-export type renameThreadApiThreadsThreadIdPatchResponse200 = {
+export type updateThreadApiThreadsThreadIdPutResponse200 = {
   data: unknown
   status: 200
 }
 
-export type renameThreadApiThreadsThreadIdPatchResponse422 = {
+export type updateThreadApiThreadsThreadIdPutResponse422 = {
   data: HTTPValidationError
   status: 422
 }
     
-export type renameThreadApiThreadsThreadIdPatchResponseSuccess = (renameThreadApiThreadsThreadIdPatchResponse200) & {
+export type updateThreadApiThreadsThreadIdPutResponseSuccess = (updateThreadApiThreadsThreadIdPutResponse200) & {
   headers: Headers;
 };
-export type renameThreadApiThreadsThreadIdPatchResponseError = (renameThreadApiThreadsThreadIdPatchResponse422) & {
+export type updateThreadApiThreadsThreadIdPutResponseError = (updateThreadApiThreadsThreadIdPutResponse422) & {
   headers: Headers;
 };
 
-export type renameThreadApiThreadsThreadIdPatchResponse = (renameThreadApiThreadsThreadIdPatchResponseSuccess | renameThreadApiThreadsThreadIdPatchResponseError)
+export type updateThreadApiThreadsThreadIdPutResponse = (updateThreadApiThreadsThreadIdPutResponseSuccess | updateThreadApiThreadsThreadIdPutResponseError)
 
-export const getRenameThreadApiThreadsThreadIdPatchUrl = (threadId: string,) => {
+export const getUpdateThreadApiThreadsThreadIdPutUrl = (threadId: string,) => {
 
 
   
@@ -400,33 +399,31 @@ export const getRenameThreadApiThreadsThreadIdPatchUrl = (threadId: string,) => 
   return `/api/threads/${threadId}`
 }
 
-export const renameThreadApiThreadsThreadIdPatch = async (threadId: string,
-    patchThreadRequest: PatchThreadRequest, options?: RequestInit): Promise<renameThreadApiThreadsThreadIdPatchResponse> => {
+export const updateThreadApiThreadsThreadIdPut = async (threadId: string, options?: RequestInit): Promise<updateThreadApiThreadsThreadIdPutResponse> => {
   
-  const res = await fetch(getRenameThreadApiThreadsThreadIdPatchUrl(threadId),
+  const res = await fetch(getUpdateThreadApiThreadsThreadIdPutUrl(threadId),
   {      
     ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      patchThreadRequest,)
+    method: 'PUT'
+    
+    
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: renameThreadApiThreadsThreadIdPatchResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as renameThreadApiThreadsThreadIdPatchResponse
+  const data: updateThreadApiThreadsThreadIdPutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateThreadApiThreadsThreadIdPutResponse
 }
 
 
 
 
-export const getRenameThreadApiThreadsThreadIdPatchMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renameThreadApiThreadsThreadIdPatch>>, TError,{threadId: string;data: PatchThreadRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof renameThreadApiThreadsThreadIdPatch>>, TError,{threadId: string;data: PatchThreadRequest}, TContext> => {
+export const getUpdateThreadApiThreadsThreadIdPutMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateThreadApiThreadsThreadIdPut>>, TError,{threadId: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof updateThreadApiThreadsThreadIdPut>>, TError,{threadId: string}, TContext> => {
 
-const mutationKey = ['renameThreadApiThreadsThreadIdPatch'];
+const mutationKey = ['updateThreadApiThreadsThreadIdPut'];
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -436,10 +433,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof renameThreadApiThreadsThreadIdPatch>>, {threadId: string;data: PatchThreadRequest}> = (props) => {
-          const {threadId,data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateThreadApiThreadsThreadIdPut>>, {threadId: string}> = (props) => {
+          const {threadId} = props ?? {};
 
-          return  renameThreadApiThreadsThreadIdPatch(threadId,data,fetchOptions)
+          return  updateThreadApiThreadsThreadIdPut(threadId,fetchOptions)
         }
 
 
@@ -449,22 +446,22 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type RenameThreadApiThreadsThreadIdPatchMutationResult = NonNullable<Awaited<ReturnType<typeof renameThreadApiThreadsThreadIdPatch>>>
-    export type RenameThreadApiThreadsThreadIdPatchMutationBody = PatchThreadRequest
-    export type RenameThreadApiThreadsThreadIdPatchMutationError = HTTPValidationError
+    export type UpdateThreadApiThreadsThreadIdPutMutationResult = NonNullable<Awaited<ReturnType<typeof updateThreadApiThreadsThreadIdPut>>>
+    
+    export type UpdateThreadApiThreadsThreadIdPutMutationError = HTTPValidationError
 
     /**
- * @summary Rename Thread
+ * @summary Update Thread
  */
-export const useRenameThreadApiThreadsThreadIdPatch = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof renameThreadApiThreadsThreadIdPatch>>, TError,{threadId: string;data: PatchThreadRequest}, TContext>, fetch?: RequestInit}
+export const useUpdateThreadApiThreadsThreadIdPut = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateThreadApiThreadsThreadIdPut>>, TError,{threadId: string}, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof renameThreadApiThreadsThreadIdPatch>>,
+        Awaited<ReturnType<typeof updateThreadApiThreadsThreadIdPut>>,
         TError,
-        {threadId: string;data: PatchThreadRequest},
+        {threadId: string},
         TContext
       > => {
-      return useMutation(getRenameThreadApiThreadsThreadIdPatchMutationOptions(options), queryClient);
+      return useMutation(getUpdateThreadApiThreadsThreadIdPutMutationOptions(options), queryClient);
     }
     /**
  * @summary Delete Thread
