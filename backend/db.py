@@ -1,7 +1,11 @@
+import os
+from dotenv import load_dotenv
 import asyncio
 from datetime import datetime
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel, Field
+
+load_dotenv()
 
 class ThreadMetadata(SQLModel, table=True):
     """Thread metadata model."""
@@ -12,7 +16,7 @@ class ThreadMetadata(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
-url = "sqlite+aiosqlite:///sqlite.db"
+url = os.getenv("SUPABASE_CONNECTION_STRING").replace("postgresql://", "postgresql+asyncpg://")
 engine = create_async_engine(url, echo=True)
 
 async def create_db_and_tables():

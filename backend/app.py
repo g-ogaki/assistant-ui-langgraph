@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from db import engine, ThreadMetadata
 from graph import create_graph, generate_title
 from utils import langchain_to_vercel_stream
@@ -10,12 +12,15 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlmodel import select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
-from langchain.messages import HumanMessage, AIMessage, ToolMessage
-from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from langchain.messages import HumanMessage
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+
+load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with AsyncSqliteSaver.from_conn_string("sqlite.db") as checkpointer:
+    async with AsyncPostgresSaver.from_conn_string(os.getenv("SUPABASE_CONNECTION_STRING")) as checkpointer:
+        await checkpointer.setup()
         app.state.agent = create_graph(checkpointer)
         yield
 
