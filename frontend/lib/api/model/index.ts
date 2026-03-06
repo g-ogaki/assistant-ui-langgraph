@@ -6,6 +6,7 @@
  */
 
 export * from './getMessagesResponse';
+export * from './getThreadsResponse';
 export * from './hTTPValidationError';
 export * from './message';
 export * from './messageArgs';
@@ -17,5 +18,6 @@ export * from './postMessagesRequestQuery';
 export * from './postThreadRequest';
 export * from './postThreadRequestQuery';
 export * from './postThreadsResponse';
+export * from './threadInfo';
 export * from './validationError';
 export * from './validationErrorCtx';

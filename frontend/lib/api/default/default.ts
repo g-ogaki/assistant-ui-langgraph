@@ -25,6 +25,7 @@ import type {
 
 import type {
   GetMessagesResponse,
+  GetThreadsResponse,
   HTTPValidationError,
   PostMessagesRequest,
   PostThreadRequest,
@@ -155,7 +156,7 @@ export function useHealthCheckGet<TData = Awaited<ReturnType<typeof healthCheckG
  * @summary Get Threads
  */
 export type getThreadsApiThreadsGetResponse200 = {
-  data: unknown
+  data: GetThreadsResponse
   status: 200
 }
 

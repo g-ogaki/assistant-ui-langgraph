@@ -62,7 +62,7 @@ async def get_session():
 def health_check():
     return {"status": "ok"}
 
-@app.get("/api/threads")
+@app.get("/api/threads", response_model=GetThreadsResponse)
 async def get_threads(x_guest_id: str = Depends(require_guest_id), session: AsyncSession = Depends(get_session)):
     threads = await session.exec(select(ThreadMetadata).where(ThreadMetadata.guest_id == x_guest_id).order_by(ThreadMetadata.updated_at.desc()))
     return GetThreadsResponse(threads=[

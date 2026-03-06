@@ -13,15 +13,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-type ThreadInfo = {
-  thread_id: string;
-  title: string;
-};
-
-type GetThreadsResponse = {
-  threads: ThreadInfo[];
-};
-
 export function Sidebar() {
   const { threadId } = useParams();
   const router = useRouter();
@@ -42,7 +33,7 @@ export function Sidebar() {
     },
   });
 
-  const threadsData = data?.status === 200 ? (data.data as GetThreadsResponse).threads : [];
+  const threadsData = data?.status === 200 ? data.data.threads : [];
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
