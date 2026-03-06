@@ -16,7 +16,6 @@ import { useQueryClient } from "@tanstack/react-query";
 type ThreadInfo = {
   thread_id: string;
   title: string;
-  created_at: string;
 };
 
 type GetThreadsResponse = {
@@ -48,9 +47,7 @@ export function Sidebar() {
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (confirm("Are you sure you want to delete this thread?")) {
-      deleteThread({ threadId: id });
-    }
+    deleteThread({ threadId: id });
   };
 
   return (

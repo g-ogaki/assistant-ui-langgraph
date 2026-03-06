@@ -42,23 +42,10 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
       },
       prepareSendMessagesRequest: async ({ messages }) => {
         const lastMessage = messages[messages.length - 1];
-        const parts = lastMessage.parts.map((part) => {
-          if (part.type === "text") {
-            return { type: "text", text: part.text };
-          }
-          if ((part.type as any) === "image") {
-            console.log("image", part);
-            return {
-              type: "image_url",
-              image_url: { url: (part as any).image },
-            };
-          }
-          return null;
-        }).filter(Boolean);
-
+        const part = lastMessage.parts[0]
         return {
           body: {
-            query: parts.length === 1 && parts[0]!.type === "text" ? (parts[0]! as any).text : parts,
+            query: part.type === 'text' ? part.text : '',
           }
         };
       }
