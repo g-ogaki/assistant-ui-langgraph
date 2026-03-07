@@ -29,13 +29,43 @@ export function Sidebar() {
   const { data } = useGetThreadsApiThreadsGet();
   const { mutate: deleteThread } = useDeleteThreadApiThreadsThreadIdDelete({
     mutation: {
-      onSuccess: () => {
+      onMutate: async (variables) => {
+        const queryKey = getGetThreadsApiThreadsGetQueryKey();
+        await queryClient.cancelQueries({ queryKey });
+
+        const previousThreads = queryClient.getQueryData(queryKey);
+
+        queryClient.setQueryData(queryKey, (old: any) => {
+          if (!old || !old.data || !old.data.threads) return old;
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              threads: old.data.threads.filter(
+                (t: any) => t.thread_id !== variables.threadId
+              ),
+            },
+          };
+        });
+
+        if (threadId === variables.threadId) {
+          router.push("/");
+        }
+
+        return { previousThreads };
+      },
+      onError: (err, variables, context) => {
+        if (context?.previousThreads) {
+          queryClient.setQueryData(
+            getGetThreadsApiThreadsGetQueryKey(),
+            context.previousThreads
+          );
+        }
+      },
+      onSettled: () => {
         queryClient.invalidateQueries({
           queryKey: getGetThreadsApiThreadsGetQueryKey(),
         });
-        if (threadId) {
-          router.push("/");
-        }
       },
     },
   });
@@ -63,7 +93,6 @@ export function Sidebar() {
       )}
     >
       <div className={cn("flex flex-col h-full w-64 p-4 overflow-hidden transition-opacity duration-300", isCollapsed ? "opacity-0 invisible" : "opacity-100 visible")}>
-        {/* New Chat button */}
         <Button
           onClick={() => {
             newChat();
@@ -75,7 +104,6 @@ export function Sidebar() {
           <span className="truncate">New Chat</span>
         </Button>
 
-        {/* Thread list */}
         <div className="flex-1 overflow-y-auto space-y-1 min-w-0 pr-1">
           <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2 px-2">
             Recent Threads
