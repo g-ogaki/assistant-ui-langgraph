@@ -39,29 +39,29 @@ import type {
 /**
  * @summary Health Check
  */
-export type healthCheckGetResponse200 = {
+export type healthCheckApiGetResponse200 = {
   data: unknown
   status: 200
 }
     
-export type healthCheckGetResponseSuccess = (healthCheckGetResponse200) & {
+export type healthCheckApiGetResponseSuccess = (healthCheckApiGetResponse200) & {
   headers: Headers;
 };
 ;
 
-export type healthCheckGetResponse = (healthCheckGetResponseSuccess)
+export type healthCheckApiGetResponse = (healthCheckApiGetResponseSuccess)
 
-export const getHealthCheckGetUrl = () => {
+export const getHealthCheckApiGetUrl = () => {
 
 
   
 
-  return `/`
+  return `/api`
 }
 
-export const healthCheckGet = async ( options?: RequestInit): Promise<healthCheckGetResponse> => {
+export const healthCheckApiGet = async ( options?: RequestInit): Promise<healthCheckApiGetResponse> => {
   
-  const res = await fetch(getHealthCheckGetUrl(),
+  const res = await fetch(getHealthCheckApiGetUrl(),
   {      
     ...options,
     method: 'GET'
@@ -72,77 +72,77 @@ export const healthCheckGet = async ( options?: RequestInit): Promise<healthChec
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: healthCheckGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as healthCheckGetResponse
+  const data: healthCheckApiGetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as healthCheckApiGetResponse
 }
 
 
 
 
 
-export const getHealthCheckGetQueryKey = () => {
+export const getHealthCheckApiGetQueryKey = () => {
     return [
-    `/`
+    `/api`
     ] as const;
     }
 
     
-export const getHealthCheckGetQueryOptions = <TData = Awaited<ReturnType<typeof healthCheckGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError, TData>>, fetch?: RequestInit}
+export const getHealthCheckApiGetQueryOptions = <TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getHealthCheckGetQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getHealthCheckApiGetQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheckGet>>> = ({ signal }) => healthCheckGet({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheckApiGet>>> = ({ signal }) => healthCheckApiGet({ signal, ...fetchOptions });
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type HealthCheckGetQueryResult = NonNullable<Awaited<ReturnType<typeof healthCheckGet>>>
-export type HealthCheckGetQueryError = unknown
+export type HealthCheckApiGetQueryResult = NonNullable<Awaited<ReturnType<typeof healthCheckApiGet>>>
+export type HealthCheckApiGetQueryError = unknown
 
 
-export function useHealthCheckGet<TData = Awaited<ReturnType<typeof healthCheckGet>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError, TData>> & Pick<
+export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthCheckGet>>,
+          Awaited<ReturnType<typeof healthCheckApiGet>>,
           TError,
-          Awaited<ReturnType<typeof healthCheckGet>>
+          Awaited<ReturnType<typeof healthCheckApiGet>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useHealthCheckGet<TData = Awaited<ReturnType<typeof healthCheckGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError, TData>> & Pick<
+export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthCheckGet>>,
+          Awaited<ReturnType<typeof healthCheckApiGet>>,
           TError,
-          Awaited<ReturnType<typeof healthCheckGet>>
+          Awaited<ReturnType<typeof healthCheckApiGet>>
         > , 'initialData'
       >, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useHealthCheckGet<TData = Awaited<ReturnType<typeof healthCheckGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError, TData>>, fetch?: RequestInit}
+export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Health Check
  */
 
-export function useHealthCheckGet<TData = Awaited<ReturnType<typeof healthCheckGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError, TData>>, fetch?: RequestInit}
+export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getHealthCheckGetQueryOptions(options)
+  const queryOptions = getHealthCheckApiGetQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

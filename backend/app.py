@@ -63,7 +63,7 @@ async def get_session():
     async with AsyncSession(engine) as session:
         yield session
 
-@app.get("/")
+@app.get("/api")
 def health_check():
     return {"status": "ok"}
 

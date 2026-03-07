@@ -10,7 +10,7 @@ export async function proxy(
   try {
     const { path: pathArray } = await params;
 
-    const path = pathArray.join('/');
+    const path = pathArray ? pathArray.join('/') : "";
     const searchParams = req.nextUrl.searchParams.toString();
     const finalURL = `${API_URL}/${path}${searchParams ? `?${searchParams}` : ""}`;
 
