@@ -5,7 +5,7 @@ const API_URL = process.env.FASTAPI_URL;
 
 export async function proxy(
   req: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> }
+  { params }: { params: Promise<{ path?: string[] }> }
 ) {
   try {
     const { path: pathArray } = await params;
