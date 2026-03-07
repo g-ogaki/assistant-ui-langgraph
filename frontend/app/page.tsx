@@ -1,5 +1,9 @@
+"use client";
+
+import { useChatStore } from "@/lib/store";
 import { Assistant } from "./assistant";
 
 export default function Home() {
-  return <Assistant />;
+  const remountKey = useChatStore((state) => state.remountKey);
+  return <Assistant key={remountKey} />;
 }

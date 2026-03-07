@@ -1,6 +1,6 @@
 "use client";
 
-import { AssistantRuntimeProvider, AttachmentAdapter } from "@assistant-ui/react";
+import { AssistantRuntimeProvider } from "@assistant-ui/react";
 import { useChatRuntime } from "@assistant-ui/react-ai-sdk";
 import { Thread } from "@/components/assistant-ui/thread";
 import { DefaultChatTransport, UIMessage } from "ai";

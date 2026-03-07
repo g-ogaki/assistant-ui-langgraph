@@ -11,20 +11,20 @@ import {
   PlusIcon,
   MessageSquareIcon,
   ChevronLeftIcon,
-  ChevronRightIcon,
   Trash2Icon,
-  PanelLeftIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useChatStore } from "@/lib/store";
 
 export function Sidebar() {
   const { threadId } = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const newChat = useChatStore((state) => state.newChat);
 
   const { data } = useGetThreadsApiThreadsGet();
   const { mutate: deleteThread } = useDeleteThreadApiThreadsThreadIdDelete({
@@ -65,7 +65,10 @@ export function Sidebar() {
       <div className={cn("flex flex-col h-full w-64 p-4 overflow-hidden transition-opacity duration-300", isCollapsed ? "opacity-0 invisible" : "opacity-100 visible")}>
         {/* New Chat button */}
         <Button
-          onClick={() => router.push("/")}
+          onClick={() => {
+            newChat();
+            router.push("/");
+          }}
           className="mt-1 mb-6 flex items-center justify-start gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 w-full"
         >
           <PlusIcon size={18} className="shrink-0" />
