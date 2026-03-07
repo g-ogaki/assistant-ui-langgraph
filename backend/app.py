@@ -117,7 +117,7 @@ async def update_thread(thread_id: str, request: Request, x_guest_id: str = Depe
 @app.delete("/api/threads/{thread_id}")
 async def delete_thread(request: Request, thread_id: str, x_guest_id: str = Depends(require_guest_id), session: AsyncSession = Depends(get_session)):
     agent = request.app.state.agent
-    agent.checkpointer.adelete_thread(thread_id)
+    await agent.checkpointer.adelete_thread(thread_id)
     await session.execute(delete(ThreadMetadata).where(ThreadMetadata.thread_id == thread_id))
     await session.commit()
     return {"status": "ok"}

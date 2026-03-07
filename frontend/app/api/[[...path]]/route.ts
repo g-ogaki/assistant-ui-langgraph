@@ -18,6 +18,7 @@ export async function proxy(
     headers.delete("host");
     const guestId = await getSessionId();
     headers.set("x-guest-id", guestId);
+    headers.set("Accept-Encoding", "identity");
 
     const res = await fetch(finalURL, {
       method: req.method,
