@@ -82,7 +82,7 @@ async def get_session():
     async with AsyncSession(engine) as session:
         yield session
 
-@app.get("/api")
+@app.api_route("/", methods=["GET", "HEAD"])
 def health_check():
     return {"status": "ok"}
 
