@@ -14,15 +14,34 @@ from sqlmodel import select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 from langchain.messages import HumanMessage
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from psycopg_pool import AsyncConnectionPool
 
 load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with AsyncPostgresSaver.from_conn_string(os.getenv("DATABASE_URL").replace("?sslmode=require", "")) as checkpointer:
-        await checkpointer.setup()
-        app.state.agent = create_graph(checkpointer)
-        yield
+    db_url = os.getenv("DATABASE_URL")
+
+    pool = AsyncConnectionPool(
+        conninfo=db_url,
+        max_size=5,
+        min_size=0,
+        open=False,
+        check=AsyncConnectionPool.check_connection,
+        kwargs={
+            "autocommit": True,
+            "prepare_threshold": 0,
+        },
+    )
+    await pool.open()
+
+    checkpointer = AsyncPostgresSaver(pool)
+    await checkpointer.setup()
+    app.state.agent = create_graph(checkpointer)
+
+    yield
+
+    await pool.close()
 
 app = FastAPI(lifespan=lifespan)
 

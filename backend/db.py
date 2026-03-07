@@ -21,6 +21,9 @@ engine = create_async_engine(
     url,
     connect_args={"ssl": True},
     pool_pre_ping=True,
+    pool_size=0,
+    max_overflow=5,
+    pool_recycle=300,
 )
 
 async def create_db_and_tables():
