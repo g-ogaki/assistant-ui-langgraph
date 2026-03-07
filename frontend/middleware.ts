@@ -3,7 +3,7 @@ import { getIronSession } from "iron-session";
 import { sessionOptions, SessionData } from "@/lib/session";
 import { v4 as uuidv4 } from "uuid";
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   const session = await getIronSession<SessionData>(
