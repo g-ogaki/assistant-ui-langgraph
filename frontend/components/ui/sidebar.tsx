@@ -5,12 +5,19 @@ import { useParams, useRouter } from "next/navigation";
 import {
   useGetThreadsApiThreadsGet,
   getGetThreadsApiThreadsGetQueryKey,
-  useDeleteThreadApiThreadsThreadIdDelete
+  useDeleteThreadApiThreadsThreadIdDelete,
 } from "@/lib/api/default/default";
-import { PlusIcon, MessageSquareIcon, ChevronLeftIcon, ChevronRightIcon, Trash2Icon } from "lucide-react";
+import {
+  PlusIcon,
+  MessageSquareIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Trash2Icon,
+  PanelLeftIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 export function Sidebar() {
@@ -35,75 +42,83 @@ export function Sidebar() {
 
   const threadsData = data?.status === 200 ? data.data.threads : [];
 
-  const handleDelete = (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    deleteThread({ threadId: id });
-  };
+  const handleDelete = useCallback(
+    (e: React.MouseEvent, id: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      deleteThread({ threadId: id });
+    },
+    [deleteThread]
+  );
+
+  const toggleCollapsed = useCallback(() => {
+    setIsCollapsed((prev) => !prev);
+  }, []);
 
   return (
     <div
       className={cn(
-        "relative flex flex-col h-screen bg-zinc-900 border-r border-zinc-800 text-zinc-100 p-4 transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-20" : "w-64"
+        "relative flex flex-col h-screen bg-zinc-900 border-r border-zinc-800 text-zinc-100 transition-all duration-300 ease-in-out shrink-0",
+        isCollapsed ? "w-0 border-r-0" : "w-64"
       )}
     >
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-10 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-zinc-400 hover:text-zinc-100"
-      >
-        {isCollapsed ? <ChevronRightIcon size={14} /> : <ChevronLeftIcon size={14} />}
-      </button>
+      <div className={cn("flex flex-col h-full w-64 p-4 overflow-hidden transition-opacity duration-300", isCollapsed ? "opacity-0 invisible" : "opacity-100 visible")}>
+        {/* New Chat button */}
+        <Button
+          onClick={() => router.push("/")}
+          className="mt-1 mb-6 flex items-center justify-start gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 w-full"
+        >
+          <PlusIcon size={18} className="shrink-0" />
+          <span className="truncate">New Chat</span>
+        </Button>
 
-      <Button
-        onClick={() => router.push("/")}
-        className={cn(
-          "mb-6 flex items-center justify-start gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border-zinc-700",
-          isCollapsed ? "px-0 justify-center h-10 w-10 mx-auto" : "w-full"
-        )}
-      >
-        <PlusIcon size={18} />
-        {!isCollapsed && <span>New Chat</span>}
-      </Button>
-
-      <div className="flex-1 overflow-y-auto space-y-1">
-        {!isCollapsed && (
+        {/* Thread list */}
+        <div className="flex-1 overflow-y-auto space-y-1 min-w-0 pr-1">
           <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-2 px-2">
             Recent Threads
           </h2>
-        )}
-        {threadsData.map((thread) => (
-          <Link
-            key={thread.thread_id}
-            href={`/thread/${thread.thread_id}`}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group relative",
-              threadId === thread.thread_id
-                ? "bg-zinc-800 text-zinc-100"
-                : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100",
-              isCollapsed && "justify-center"
-            )}
-          >
-            <MessageSquareIcon size={18} className="shrink-0" />
-            {!isCollapsed && (
-              <>
-                <span className="truncate text-sm font-medium flex-1">
-                  {thread.title || "Untitled Chat"}
-                </span>
-                <button
-                  onClick={(e) => handleDelete(e, thread.thread_id)}
-                  className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 transition-opacity"
-                >
-                  <Trash2Icon size={14} />
-                </button>
-              </>
-            )}
-          </Link>
-        ))}
-        {threadsData.length === 0 && !isCollapsed && (
-          <p className="text-sm text-zinc-500 px-2 italic">No chats yet</p>
-        )}
+
+          {threadsData.map((thread) => (
+            <Link
+              key={thread.thread_id}
+              href={`/thread/${thread.thread_id}`}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group relative",
+                threadId === thread.thread_id
+                  ? "bg-zinc-800 text-zinc-100"
+                  : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
+              )}
+            >
+              <MessageSquareIcon size={18} className="shrink-0" />
+              <span className="truncate text-sm font-medium flex-1">
+                {thread.title || "Untitled Chat"}
+              </span>
+              <button
+                onClick={(e) => handleDelete(e, thread.thread_id)}
+                className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 transition-opacity shrink-0 flex items-center justify-center"
+                aria-label={`Delete ${thread.title || "Untitled Chat"}`}
+              >
+                <Trash2Icon size={14} />
+              </button>
+            </Link>
+          ))}
+
+          {threadsData.length === 0 && (
+            <p className="text-sm text-zinc-500 px-2 italic">No chats yet</p>
+          )}
+        </div>
       </div>
+
+      <button
+        onClick={toggleCollapsed}
+        className={cn(
+          "absolute top-6 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700 transition-all duration-300 shadow-sm",
+          isCollapsed ? "-right-10" : "-right-3"
+        )}
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        <ChevronLeftIcon size={14} className={cn("transition-transform duration-300", isCollapsed && "rotate-180")} />
+      </button>
     </div>
   );
 }
