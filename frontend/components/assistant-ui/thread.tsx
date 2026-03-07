@@ -31,16 +31,24 @@ import {
   RefreshCwIcon,
   SquareIcon,
 } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import githubIcon from "@/assets/github-mark-white.png";
 import type { FC } from "react";
 
 export const Thread: FC = () => {
   return (
     <ThreadPrimitive.Root
-      className="aui-root aui-thread-root @container flex h-full flex-col bg-background"
+      className="aui-root aui-thread-root @container flex h-full flex-col bg-background relative"
       style={{
         ["--thread-max-width" as string]: "44rem",
       }}
     >
+      <div className="absolute top-8 right-8 z-50">
+        <Link href="https://github.com/g-ogaki/assistant-ui-langgraph" target="_blank" rel="noopener noreferrer">
+          <Image src={githubIcon} alt="GitHub Repository" width={24} height={24} className="opacity-80 hover:opacity-100 transition-opacity" />
+        </Link>
+      </div>
       <ThreadPrimitive.Viewport
         turnAnchor="top"
         className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll scroll-smooth px-4 pt-4"
@@ -86,10 +94,10 @@ const ThreadWelcome: FC = () => {
       <div className="aui-thread-welcome-center flex w-full grow flex-col items-center justify-center">
         <div className="aui-thread-welcome-message flex size-full flex-col justify-center px-4">
           <h1 className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in font-semibold text-2xl duration-200">
-            Hello there!
+            assistant-ui + Python LangGraph
           </h1>
           <p className="aui-thread-welcome-message-inner fade-in slide-in-from-bottom-1 animate-in text-muted-foreground text-xl delay-75 duration-200">
-            How can I help you today?
+            Vercel AI SDK and FastAPI under the hood
           </p>
         </div>
       </div>
