@@ -19,7 +19,7 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with AsyncPostgresSaver.from_conn_string(os.getenv("SUPABASE_CONNECTION_STRING")) as checkpointer:
+    async with AsyncPostgresSaver.from_conn_string(os.getenv("DATABASE_URL").replace("?sslmode=require", "")) as checkpointer:
         await checkpointer.setup()
         app.state.agent = create_graph(checkpointer)
         yield

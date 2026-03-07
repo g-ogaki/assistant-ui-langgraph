@@ -16,8 +16,12 @@ class ThreadMetadata(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
-url = os.getenv("SUPABASE_CONNECTION_STRING").replace("postgresql://", "postgresql+asyncpg://")
-engine = create_async_engine(url, echo=True)
+url = os.getenv("DATABASE_URL").replace("postgresql://", "postgresql+asyncpg://").replace("?sslmode=require", "")
+engine = create_async_engine(
+    url,
+    connect_args={"ssl": True},
+    pool_pre_ping=True,
+)
 
 async def create_db_and_tables():
     async with engine.begin() as conn:
