@@ -23,7 +23,7 @@ export function Sidebar() {
   const { threadId } = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const newChat = useChatStore((state) => state.newChat);
 
   const { data } = useGetThreadsApiThreadsGet();
@@ -48,6 +48,7 @@ export function Sidebar() {
           };
         });
 
+        // TODO: Thread deletion just after new chat invocation (threadId === undefined) should be routed to "/".
         if (threadId === variables.threadId) {
           router.push("/");
         }

@@ -34,7 +34,7 @@ export default function Home() {
   return (
     <Assistant
       threadId={threadId as string}
-      messages={convertMessage(data?.status === 200 ? data?.data?.messages : [])}
+      messages={convertMessage(data?.status === 200 ? data.data.messages : [])}
     />
   );
 }
