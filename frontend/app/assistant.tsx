@@ -6,19 +6,20 @@ import { Thread } from "@/components/assistant-ui/thread";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { useCreateThreadApiThreadsPost, getGetThreadsApiThreadsGetQueryKey, useUpdateThreadApiThreadsThreadIdPut } from "@/lib/api/default/default";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRef } from "react";
 
 export function Assistant({ threadId, messages }: { threadId?: string, messages?: UIMessage[] }) {
   const { mutateAsync: createThread } = useCreateThreadApiThreadsPost();
   const { mutateAsync: updateThread } = useUpdateThreadApiThreadsThreadIdPut();
   const queryClient = useQueryClient();
+  const threadIdRef = useRef(threadId);
 
   const runtime = useChatRuntime({
     transport: new DefaultChatTransport({
       fetch: async (_, options) => {
-        let currentThreadId = threadId;
-        if (currentThreadId) {
+        if (threadIdRef.current) {
           // update thread's updated_at
-          await updateThread({ threadId: currentThreadId });
+          await updateThread({ threadId: threadIdRef.current });
         } else {
           // redirect in new conversation invocation
           const bodyData = JSON.parse(options?.body as string);
@@ -27,13 +28,13 @@ export function Assistant({ threadId, messages }: { threadId?: string, messages?
               if (response.status !== 200) {
                 throw new Error('Failed to create thread');
               }
-              currentThreadId = response.data.thread_id;
-              window.history.replaceState(null, '', `/thread/${currentThreadId}`);
+              threadIdRef.current = response.data.thread_id;
+              window.history.pushState(null, '', `/thread/${threadIdRef.current}`);
             }
           });
         }
 
-        const url = `/api/threads/${currentThreadId}/messages`;
+        const url = `/api/threads/${threadIdRef.current}/messages`;
         const response = await fetch(url, options);
         queryClient.invalidateQueries({
           queryKey: getGetThreadsApiThreadsGetQueryKey(),
