@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useGetMessagesApiThreadsThreadIdMessagesGet } from "@/lib/api/default/default";
 import { Message } from "@/lib/api/model";
 import { UIMessage } from "ai";
+import { useThreadId } from "@/app/providers";
 
 function convertMessage(messages: Message[]): UIMessage[] {
   return messages.map(message => ({
@@ -24,8 +25,11 @@ function convertMessage(messages: Message[]): UIMessage[] {
 }
 
 export default function Home() {
-  const { threadId } = useParams();
-  const { data, isLoading } = useGetMessagesApiThreadsThreadIdMessagesGet(threadId as string);
+  const { threadId: threadIdParams } = useParams();
+  const threadId = threadIdParams as string;
+  const threadIdRef = useThreadId();
+  threadIdRef.current = threadId;
+  const { data, isLoading } = useGetMessagesApiThreadsThreadIdMessagesGet(threadId);
 
   if (isLoading) {
     return <div>Loading...</div>
@@ -33,7 +37,6 @@ export default function Home() {
 
   return (
     <Assistant
-      threadId={threadId as string}
       messages={convertMessage(data?.status === 200 ? data.data.messages : [])}
     />
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   useGetThreadsApiThreadsGet,
   getGetThreadsApiThreadsGetQueryKey,
@@ -18,9 +18,11 @@ import { Button } from "@/components/ui/button";
 import { useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useChatStore } from "@/lib/store";
+import { useThreadId } from "@/app/providers";
 
 export function Sidebar() {
-  const { threadId } = useParams();
+  const threadIdRef = useThreadId();
+  const threadId = threadIdRef.current;
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -48,9 +50,9 @@ export function Sidebar() {
           };
         });
 
-        // TODO: Thread deletion just after new chat invocation (threadId === undefined) should be routed to "/".
         if (threadId === variables.threadId) {
           router.push("/");
+          newChat();
         }
 
         return { previousThreads };

@@ -6,13 +6,13 @@ import { Thread } from "@/components/assistant-ui/thread";
 import { DefaultChatTransport, UIMessage } from "ai";
 import { useCreateThreadApiThreadsPost, getGetThreadsApiThreadsGetQueryKey, useUpdateThreadApiThreadsThreadIdPut } from "@/lib/api/default/default";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRef } from "react";
+import { useThreadId } from "@/app/providers";
 
-export function Assistant({ threadId, messages }: { threadId?: string, messages?: UIMessage[] }) {
+export function Assistant({ messages }: { messages?: UIMessage[] }) {
   const { mutateAsync: createThread } = useCreateThreadApiThreadsPost();
   const { mutateAsync: updateThread } = useUpdateThreadApiThreadsThreadIdPut();
   const queryClient = useQueryClient();
-  const threadIdRef = useRef(threadId);
+  const threadIdRef = useThreadId();
 
   const runtime = useChatRuntime({
     transport: new DefaultChatTransport({
