@@ -98,8 +98,8 @@ export function Sidebar() {
       <div className={cn("flex flex-col h-full w-64 p-4 overflow-hidden transition-opacity duration-300", isCollapsed ? "opacity-0 invisible" : "opacity-100 visible")}>
         <Button
           onClick={() => {
-            newChat();
             router.push("/");
+            newChat();
           }}
           className="mt-1 mb-6 flex items-center justify-start gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 w-full"
         >
