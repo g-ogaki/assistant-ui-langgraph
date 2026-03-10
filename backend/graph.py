@@ -1,3 +1,4 @@
+from db import pool
 from dotenv import load_dotenv
 from typing import Annotated
 from pydantic import BaseModel, Field
@@ -6,6 +7,7 @@ from langchain.messages import AIMessage, HumanMessage, SystemMessage, AnyMessag
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt.tool_node import ToolNode
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 load_dotenv()
 
@@ -30,7 +32,7 @@ class AgentState(BaseModel):
     messages: Annotated[list[AnyMessage], add_messages]
 
 # For demonstration; you can simply use langchain.agents.create_agent
-def create_graph(checkpointer):
+async def create_graph():
     tools = [multiply]
     model_with_tools = llm.bind_tools(tools)
 
@@ -59,6 +61,8 @@ def create_graph(checkpointer):
     graph.add_conditional_edges("model", should_continue, ["tools", END])
     graph.add_edge("tools", "model")
 
+    checkpointer = AsyncPostgresSaver(pool)
+    await checkpointer.setup()
     return graph.compile(checkpointer=checkpointer)
 
 class ThreadTitle(BaseModel):

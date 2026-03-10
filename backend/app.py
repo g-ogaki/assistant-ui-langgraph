@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from db import pool, engine, ThreadMetadata
+from db import pool, engine, create_db_and_tables, ThreadMetadata
 from graph import create_graph, generate_title
 from utils import langchain_to_vercel_stream
 from uuid import uuid4
@@ -13,28 +13,17 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 from langchain.messages import HumanMessage
-from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialization
     await pool.open()
-
-    # Create tables
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
-    await engine.dispose()
-
-    # Create checkpoint
-    checkpointer = AsyncPostgresSaver(pool)
-    await checkpointer.setup()
-    app.state.agent = create_graph(checkpointer)
+    await create_db_and_tables()
+    app.state.agent = await create_graph()
 
     yield
 
-    # Shutdown
     await pool.close()
 
 app = FastAPI(lifespan=lifespan)
