@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSessionId } from "@/actions/get-session-id";
 
 const API_URL = process.env.FASTAPI_URL;
+const SHARED_PROXY_SECRET = process.env.SHARED_PROXY_SECRET as string;
 
 export async function proxy(
   req: NextRequest,
@@ -18,6 +19,7 @@ export async function proxy(
     headers.delete("host");
     const guestId = await getSessionId();
     headers.set("x-guest-id", guestId);
+    headers.set("x-proxy-secret", SHARED_PROXY_SECRET);
     headers.set("Accept-Encoding", "identity");
 
     const res = await fetch(finalURL, {

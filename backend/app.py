@@ -7,7 +7,8 @@ from uuid import uuid4
 from datetime import datetime
 from contextlib import asynccontextmanager
 from typing import Literal
-from fastapi import FastAPI, Header, APIRouter, Depends, HTTPException, Request
+from fastapi import FastAPI, Header, APIRouter, Depends, HTTPException, Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlmodel import SQLModel, select, delete
@@ -27,6 +28,21 @@ async def lifespan(app: FastAPI):
     await pool.close()
 
 app = FastAPI(lifespan=lifespan)
+
+SHARED_PROXY_SECRET = os.getenv("SHARED_PROXY_SECRET")
+
+class ProxySecretMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path == "/":
+            return await call_next(request)
+
+        secret = request.headers.get("x-proxy-secret")
+        if secret != SHARED_PROXY_SECRET:
+            return Response(status_code=403, content="Forbidden")
+
+        return await call_next(request)
+
+app.add_middleware(ProxySecretMiddleware)
 
 class Message(BaseModel):
     type: Literal["human", "ai", "tool"]
