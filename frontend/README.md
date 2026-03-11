@@ -1,49 +1,29 @@
-This is the [assistant-ui](https://github.com/assistant-ui/assistant-ui) minimal starter project.
+# Assistant-UI Frontend
+
+This is the frontend component of the Assistant UI + LangGraph project, built with Next.js and [`@assistant-ui/react`](https://github.com/assistant-ui/assistant-ui).
+
+## Features
+
+* **Modern Interface**: Responsive chat UI with rich markdown support and AI SDK integration point.
+* **Optimized Experience**: Optimistic UI updates for thread management (e.g., deletion) and seamless chat navigation.
+
+## Prerequisites
+
+* Node.js
+* npm
 
 ## Getting Started
 
-### 1. Configure Environment Variables
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Add your OpenAI API key to a `.env.local` file:
+2. Configure environment variables (copy `.env.example` to `.env`).
 
-```
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:3000`.
 
-### 2. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-```
-
-### 3. Run the Development Server
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Development
-
-You can start customizing the UI by modifying components in the `components/assistant-ui/` directory.
-
-To add more assistant-ui components:
-
-```bash
-npx assistant-ui add
-```
-
-### Key Files
-
-- `app/assistant.tsx` - Sets up the runtime provider
-- `app/api/chat/route.ts` - Chat API endpoint
-- `components/assistant-ui/thread.tsx` - Chat thread component

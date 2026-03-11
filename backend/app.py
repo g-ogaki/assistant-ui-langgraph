@@ -1,9 +1,9 @@
-from dotenv import load_dotenv
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
 from db import pool, create_db_and_tables
 from graph import create_graph
 from api.routes import api_router
+from dotenv import load_dotenv
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
 
 load_dotenv()
 
