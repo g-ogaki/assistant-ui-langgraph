@@ -1,3 +1,4 @@
+# TODO: remove asyncpg-related libraries
 python-dotenv
 fastapi
 uvicorn
@@ -6,5 +7,7 @@ asyncpg
 psycopg_binary
 langchain
 langchain-ollama
+langchain-cloudflare
+langchain-postgres
 langgraph-checkpoint-postgres
 greenlet

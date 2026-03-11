@@ -1,9 +1,12 @@
-from db import pool
+from db import pool, engine
 from dotenv import load_dotenv
 from typing import Annotated
 from pydantic import BaseModel, Field
 from langchain_ollama import ChatOllama
+from langchain_cloudflare.embeddings import CloudflareWorkersAIEmbeddings
 from langchain.messages import AIMessage, HumanMessage, SystemMessage, AnyMessage
+from langchain_postgres import PGVector
+from langchain_core.tools import create_retriever_tool
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt.tool_node import ToolNode
@@ -11,21 +14,13 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 load_dotenv()
 
-def multiply(a: int, b: int) -> int:
-    """Calculate the product of two numbers.
-
-    Args:
-        a: The first number.
-        b: The second number.
-
-    Returns:
-        The product of the two numbers.
-    """
-    return a * b
-
 llm = ChatOllama(
     model="gpt-oss:120b-cloud",
     base_url="https://ollama.com", 
+)
+
+embeddings = CloudflareWorkersAIEmbeddings(
+    model_name="@cf/baai/bge-small-en-v1.5",
 )
 
 class AgentState(BaseModel):
@@ -33,12 +28,27 @@ class AgentState(BaseModel):
 
 # For demonstration; you can simply use langchain.agents.create_agent
 async def create_graph():
-    tools = [multiply]
+    vector_store = PGVector(
+        embeddings=embeddings,
+        embedding_length=384,
+        collection_name="IT_help_desk",
+        connection=engine,
+    )
+
+    retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 5, "fetch_k": 20})
+    retriever_tool = create_retriever_tool(
+        retriever=retriever,
+        name="knowledge base retriever",
+        description="Use this tool to retrieve relevant information from the IT help desk knowledge base."
+    )
+
+    tools = [retriever_tool]
     model_with_tools = llm.bind_tools(tools)
 
     async def model_node(state: AgentState) -> dict:
         response = await model_with_tools.ainvoke([
-            SystemMessage(content="You must call the tool 'multiply' if you are requested."),
+            SystemMessage(content="""You are a helpful assistant for IT help desk.
+            You are given a tool to retrieve knowledge base, so reference it if user asks relevant questions"""),
             *state.messages
         ])
         return {"messages": [response]}

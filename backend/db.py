@@ -24,7 +24,7 @@ pool = AsyncConnectionPool(
     close_returns=True,
     check=AsyncConnectionPool.check_connection,
     kwargs={
-        "prepare_threshold": 0,
+        "prepare_threshold": None,
     },
 )
 
