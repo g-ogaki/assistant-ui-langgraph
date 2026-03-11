@@ -1,13 +1,13 @@
-# TODO: remove asyncpg-related libraries
 python-dotenv
 fastapi
 uvicorn
 sqlmodel
-asyncpg
-psycopg_binary
 langchain
 langchain-ollama
 langchain-cloudflare
 langchain-postgres
 langgraph-checkpoint-postgres
-greenlet
+
+# For preprocess run locally
+# pandas
+# langchain-text-splitters
