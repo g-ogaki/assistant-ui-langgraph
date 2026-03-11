@@ -3,8 +3,8 @@
 .env
 
 # Backend
+__pycache__
 backend/.venv
-backend/__pycache__
 backend/*.db*
 
 # Frontend
