@@ -129,7 +129,7 @@ export function Sidebar() {
               </span>
               <button
                 onClick={(e) => handleDelete(e, thread.thread_id)}
-                className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 transition-opacity shrink-0 flex items-center justify-center"
+                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 p-1 hover:text-red-400 transition-opacity shrink-0 flex items-center justify-center"
                 aria-label={`Delete ${thread.title || "Untitled Chat"}`}
               >
                 <Trash2Icon size={14} />

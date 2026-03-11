@@ -1,11 +1,11 @@
 # Assistant-UI Frontend
 
-This is the frontend component of the Assistant UI + LangGraph project, built with Next.js and [`@assistant-ui/react`](https://github.com/assistant-ui/assistant-ui).
+This is the frontend component of the Assistant UI + LangGraph project, built with Next.js and [assistant-ui](https://github.com/assistant-ui/assistant-ui).
 
 ## Features
 
-* **Modern Interface**: Responsive chat UI with rich markdown support and AI SDK integration point.
-* **Optimized Experience**: Optimistic UI updates for thread management (e.g., deletion) and seamless chat navigation.
+* **Modern Interface**: Responsive chat UI with rich markdown support.
+* **Vercel AI SDK**: Follows [Vercel AI SDK](https://ai-sdk.dev/)'s [Data Transfer Protocol](https://ai-sdk.dev/docs/ai-sdk-ui/stream-protocol#data-stream-protocol) utilized in the `@assistant-ui/react-ai-sdk` integration.
 
 ## Prerequisites
 

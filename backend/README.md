@@ -6,6 +6,7 @@ This is the backend service for the Assistant UI project, exposing a RAG agent v
 
 * **FastAPI**: Provides REST APIs and server-sent events (SSE) streaming endpoints for real-time chat messages.
 * **LangGraph Agent**: Orchestrates the RAG interactions, incorporating tool usage.
+* **Vercel AI SDK Support**: Translates LangChain's astream_events to follow [Data Transfer Protocol](https://ai-sdk.dev/docs/ai-sdk-ui/stream-protocol#data-stream-protocol) in `utils.py`.
 * **Ollama Integration**: Employs `langchain-ollama` for LLM inference (e.g., `gpt-oss:120b-cloud`).
 * **Vector Retrieval (RAG)**: Integrates PGVector and Cloudflare Workers AI embeddings (`@cf/baai/bge-small-en-v1.5`) to search an IT Help Desk Knowledge Base.
 * **Persistent State**: Stores conversation histories, checkpoints, and thread metadata natively using PostgreSQL (`langgraph-checkpoint-postgres` and SQLModel).
