@@ -108,9 +108,16 @@ const ThreadWelcome: FC = () => {
 
 const SUGGESTIONS = [
   {
-    title: "Calculate multiplication",
-    label: "to check if tool calling works",
-    prompt: "What is 123 * 456?",
+    title: "Ask the IT help desk assistant",
+    label: "for testing Retrieval-Augmented Generation",
+    prompt: `1. How do I set up my company email on my personal Android device?
+2. I forgot my PIN, how can I reset it?
+3. My Microsoft Word keeps freezing every time I try to open a document, I've tried closing and reopening it but the issue persists, what can I do to fix it?`,
+  },
+  {
+    title: "Ask the chatbot a question",
+    label: "for general-purpose usage",
+    prompt: "Why is the ocean salty?",
   }
 ] as const;
 

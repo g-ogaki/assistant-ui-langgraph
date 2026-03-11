@@ -38,7 +38,7 @@ async def create_graph():
     retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 5, "fetch_k": 20})
     retriever_tool = create_retriever_tool(
         retriever=retriever,
-        name="knowledge base retriever",
+        name="knowledge_base_retriever",
         description="Use this tool to retrieve relevant information from the IT help desk knowledge base."
     )
 
@@ -47,8 +47,10 @@ async def create_graph():
 
     async def model_node(state: AgentState) -> dict:
         response = await model_with_tools.ainvoke([
-            SystemMessage(content="""You are a helpful assistant for IT help desk.
-            You are given a tool to retrieve knowledge base, so reference it if user asks relevant questions"""),
+            SystemMessage(content="""You are a helpful assistant for the IT help desk.
+            You are given a tool to search the knowledge base, so utilize it if users ask relevant questions.
+            If the user asks multiple questions, you must reference it for each individual question.
+            If you are asked general questions, provide a clear and detailed answer."""),
             *state.messages
         ])
         return {"messages": [response]}
