@@ -4,7 +4,7 @@ A full-stack monorepo integrating a modern chat interface built with [assistant-
 
 ## Getting Started
 
-You can try this application on [https://assistant-ui-langgraph.monipy.workers.dev](https://assistant-ui-langgraph.monipy.workers.dev){:target="_blank"}
+You can try it: https://assistant-ui-langgraph.monipy.workers.dev
 
 ### Architecture
 
