@@ -1,5 +1,7 @@
 # Assistant UI + Python LangGraph
 
+![screenshot](thumbnail.png)
+
 A full-stack monorepo integrating a modern chat interface built with [assistant-ui](https://github.com/assistant-ui/assistant-ui) on the frontend and [LangGraph](https://langchain-ai.github.io/langgraph/) and [FastAPI](https://fastapi.tiangolo.com/) on the backend.
 
 ## Getting Started
