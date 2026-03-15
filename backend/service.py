@@ -31,11 +31,11 @@ class ChatService:
         return await self.repository.delete(thread_id, x_guest_id)
     
     async def get_messages(self, thread_id: str, x_guest_id: str) -> list[Message] | None:
-        if not self.repository.get(thread_id, x_guest_id):
+        if not await self.repository.get(thread_id, x_guest_id):
             return None
         return await self.agent.get_messages(thread_id)
     
     async def stream(self, thread_id: str, x_guest_id: str, query: str) -> AsyncGenerator[str, None] | None:
-        if not self.repository.get(thread_id, x_guest_id):
+        if not await self.repository.get(thread_id, x_guest_id):
             return None
-        return await self.agent.stream(thread_id, query)
+        return self.agent.stream(thread_id, query)

@@ -105,7 +105,7 @@ class Agent:
         ])
         return response.title
     
-    async def get_messages(self, thread_id: str) -> list[Message] | None:
+    async def get_messages(self, thread_id: str) -> list[Message]:
         state = await self.graph.aget_state(config={"configurable": {"thread_id": thread_id}})
         messages = []
         tool_calls = {}
@@ -121,7 +121,7 @@ class Agent:
                 messages.append(Message(type=msg.type, content=msg.content, id=msg.id))
         return messages
     
-    async def stream(self, thread_id: str, query: str) -> AsyncGenerator[str, None] | None:
+    def stream(self, thread_id: str, query: str) -> AsyncGenerator[str, None]:
         astream_events = self.graph.astream_events(
             input={"messages": HumanMessage(content=query)},
             config={"configurable": {"thread_id": thread_id}}
