@@ -1,7 +1,5 @@
 import os
-from db import engine
 from fastapi import Header, HTTPException
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 SHARED_PROXY_SECRET = os.getenv("SHARED_PROXY_SECRET")
 

@@ -39,19 +39,19 @@ import type {
 /**
  * @summary Health Check
  */
-export type healthCheckHeadResponse200 = {
+export type healthCheckGetResponse200 = {
   data: unknown
   status: 200
 }
     
-export type healthCheckHeadResponseSuccess = (healthCheckHeadResponse200) & {
+export type healthCheckGetResponseSuccess = (healthCheckGetResponse200) & {
   headers: Headers;
 };
 ;
 
-export type healthCheckHeadResponse = (healthCheckHeadResponseSuccess)
+export type healthCheckGetResponse = (healthCheckGetResponseSuccess)
 
-export const getHealthCheckHeadUrl = () => {
+export const getHealthCheckGetUrl = () => {
 
 
   
@@ -59,9 +59,9 @@ export const getHealthCheckHeadUrl = () => {
   return `/`
 }
 
-export const healthCheckHead = async ( options?: RequestInit): Promise<healthCheckHeadResponse> => {
+export const healthCheckGet = async ( options?: RequestInit): Promise<healthCheckGetResponse> => {
   
-  const res = await fetch(getHealthCheckHeadUrl(),
+  const res = await fetch(getHealthCheckGetUrl(),
   {      
     ...options,
     method: 'HEAD'
@@ -72,18 +72,18 @@ export const healthCheckHead = async ( options?: RequestInit): Promise<healthChe
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: healthCheckHeadResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as healthCheckHeadResponse
+  const data: healthCheckGetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as healthCheckGetResponse
 }
 
 
 
 
-export const getHealthCheckHeadMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof healthCheckHead>>, TError,void, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof healthCheckHead>>, TError,void, TContext> => {
+export const getHealthCheckGetMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError,void, TContext> => {
 
-const mutationKey = ['healthCheckHead'];
+const mutationKey = ['healthCheckGet'];
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -93,10 +93,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof healthCheckHead>>, void> = () => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof healthCheckGet>>, void> = () => {
           
 
-          return  healthCheckHead(fetchOptions)
+          return  healthCheckGet(fetchOptions)
         }
 
 
@@ -106,22 +106,22 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type HealthCheckHeadMutationResult = NonNullable<Awaited<ReturnType<typeof healthCheckHead>>>
+    export type HealthCheckGetMutationResult = NonNullable<Awaited<ReturnType<typeof healthCheckGet>>>
     
-    export type HealthCheckHeadMutationError = unknown
+    export type HealthCheckGetMutationError = unknown
 
     /**
  * @summary Health Check
  */
-export const useHealthCheckHead = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof healthCheckHead>>, TError,void, TContext>, fetch?: RequestInit}
+export const useHealthCheckGet = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof healthCheckGet>>, TError,void, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof healthCheckHead>>,
+        Awaited<ReturnType<typeof healthCheckGet>>,
         TError,
         void,
         TContext
       > => {
-      return useMutation(getHealthCheckHeadMutationOptions(options), queryClient);
+      return useMutation(getHealthCheckGetMutationOptions(options), queryClient);
     }
     /**
  * @summary Get Threads
@@ -653,28 +653,28 @@ export function useGetMessagesApiThreadsThreadIdMessagesGet<TData = Awaited<Retu
 
 
 /**
- * @summary Invoke
+ * @summary Stream
  */
-export type invokeApiThreadsThreadIdMessagesPostResponse200 = {
+export type streamApiThreadsThreadIdMessagesPostResponse200 = {
   data: unknown
   status: 200
 }
 
-export type invokeApiThreadsThreadIdMessagesPostResponse422 = {
+export type streamApiThreadsThreadIdMessagesPostResponse422 = {
   data: HTTPValidationError
   status: 422
 }
     
-export type invokeApiThreadsThreadIdMessagesPostResponseSuccess = (invokeApiThreadsThreadIdMessagesPostResponse200) & {
+export type streamApiThreadsThreadIdMessagesPostResponseSuccess = (streamApiThreadsThreadIdMessagesPostResponse200) & {
   headers: Headers;
 };
-export type invokeApiThreadsThreadIdMessagesPostResponseError = (invokeApiThreadsThreadIdMessagesPostResponse422) & {
+export type streamApiThreadsThreadIdMessagesPostResponseError = (streamApiThreadsThreadIdMessagesPostResponse422) & {
   headers: Headers;
 };
 
-export type invokeApiThreadsThreadIdMessagesPostResponse = (invokeApiThreadsThreadIdMessagesPostResponseSuccess | invokeApiThreadsThreadIdMessagesPostResponseError)
+export type streamApiThreadsThreadIdMessagesPostResponse = (streamApiThreadsThreadIdMessagesPostResponseSuccess | streamApiThreadsThreadIdMessagesPostResponseError)
 
-export const getInvokeApiThreadsThreadIdMessagesPostUrl = (threadId: string,) => {
+export const getStreamApiThreadsThreadIdMessagesPostUrl = (threadId: string,) => {
 
 
   
@@ -682,10 +682,10 @@ export const getInvokeApiThreadsThreadIdMessagesPostUrl = (threadId: string,) =>
   return `/api/threads/${threadId}/messages`
 }
 
-export const invokeApiThreadsThreadIdMessagesPost = async (threadId: string,
-    postMessagesRequest: PostMessagesRequest, options?: RequestInit): Promise<invokeApiThreadsThreadIdMessagesPostResponse> => {
+export const streamApiThreadsThreadIdMessagesPost = async (threadId: string,
+    postMessagesRequest: PostMessagesRequest, options?: RequestInit): Promise<streamApiThreadsThreadIdMessagesPostResponse> => {
   
-  const res = await fetch(getInvokeApiThreadsThreadIdMessagesPostUrl(threadId),
+  const res = await fetch(getStreamApiThreadsThreadIdMessagesPostUrl(threadId),
   {      
     ...options,
     method: 'POST',
@@ -697,18 +697,18 @@ export const invokeApiThreadsThreadIdMessagesPost = async (threadId: string,
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: invokeApiThreadsThreadIdMessagesPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as invokeApiThreadsThreadIdMessagesPostResponse
+  const data: streamApiThreadsThreadIdMessagesPostResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as streamApiThreadsThreadIdMessagesPostResponse
 }
 
 
 
 
-export const getInvokeApiThreadsThreadIdMessagesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext> => {
+export const getStreamApiThreadsThreadIdMessagesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof streamApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof streamApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext> => {
 
-const mutationKey = ['invokeApiThreadsThreadIdMessagesPost'];
+const mutationKey = ['streamApiThreadsThreadIdMessagesPost'];
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -718,10 +718,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, {threadId: string;data: PostMessagesRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof streamApiThreadsThreadIdMessagesPost>>, {threadId: string;data: PostMessagesRequest}> = (props) => {
           const {threadId,data} = props ?? {};
 
-          return  invokeApiThreadsThreadIdMessagesPost(threadId,data,fetchOptions)
+          return  streamApiThreadsThreadIdMessagesPost(threadId,data,fetchOptions)
         }
 
 
@@ -731,21 +731,21 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type InvokeApiThreadsThreadIdMessagesPostMutationResult = NonNullable<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>>
-    export type InvokeApiThreadsThreadIdMessagesPostMutationBody = PostMessagesRequest
-    export type InvokeApiThreadsThreadIdMessagesPostMutationError = HTTPValidationError
+    export type StreamApiThreadsThreadIdMessagesPostMutationResult = NonNullable<Awaited<ReturnType<typeof streamApiThreadsThreadIdMessagesPost>>>
+    export type StreamApiThreadsThreadIdMessagesPostMutationBody = PostMessagesRequest
+    export type StreamApiThreadsThreadIdMessagesPostMutationError = HTTPValidationError
 
     /**
- * @summary Invoke
+ * @summary Stream
  */
-export const useInvokeApiThreadsThreadIdMessagesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
+export const useStreamApiThreadsThreadIdMessagesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof streamApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>,
+        Awaited<ReturnType<typeof streamApiThreadsThreadIdMessagesPost>>,
         TError,
         {threadId: string;data: PostMessagesRequest},
         TContext
       > => {
-      return useMutation(getInvokeApiThreadsThreadIdMessagesPostMutationOptions(options), queryClient);
+      return useMutation(getStreamApiThreadsThreadIdMessagesPostMutationOptions(options), queryClient);
     }
     

@@ -1,5 +1,4 @@
-from db import pool
-from graph import Agent
+from service import ChatService
 from api.routes import api_router
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
@@ -9,11 +8,10 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await pool.open()
-    app.state.agent = Agent()
-    await app.state.agent.initialize()
+    app.state.service = ChatService()
+    await app.state.service.startup()
     yield
-    await pool.close()
+    await app.state.service.shutdown()
 
 app = FastAPI(lifespan=lifespan)
 
