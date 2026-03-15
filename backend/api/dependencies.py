@@ -13,7 +13,3 @@ async def require_guest_id(x_guest_id: str = Header(...)):
     if not x_guest_id:
         raise HTTPException(status_code=400, detail="x-guest-id header invalid")
     return x_guest_id
-
-async def get_session():
-    async with AsyncSession(engine) as session:
-        yield session

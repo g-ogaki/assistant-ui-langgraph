@@ -39,32 +39,32 @@ import type {
 /**
  * @summary Health Check
  */
-export type healthCheckApiGetResponse200 = {
+export type healthCheckHeadResponse200 = {
   data: unknown
   status: 200
 }
     
-export type healthCheckApiGetResponseSuccess = (healthCheckApiGetResponse200) & {
+export type healthCheckHeadResponseSuccess = (healthCheckHeadResponse200) & {
   headers: Headers;
 };
 ;
 
-export type healthCheckApiGetResponse = (healthCheckApiGetResponseSuccess)
+export type healthCheckHeadResponse = (healthCheckHeadResponseSuccess)
 
-export const getHealthCheckApiGetUrl = () => {
+export const getHealthCheckHeadUrl = () => {
 
 
   
 
-  return `/api`
+  return `/`
 }
 
-export const healthCheckApiGet = async ( options?: RequestInit): Promise<healthCheckApiGetResponse> => {
+export const healthCheckHead = async ( options?: RequestInit): Promise<healthCheckHeadResponse> => {
   
-  const res = await fetch(getHealthCheckApiGetUrl(),
+  const res = await fetch(getHealthCheckHeadUrl(),
   {      
     ...options,
-    method: 'GET'
+    method: 'HEAD'
     
     
   }
@@ -72,87 +72,58 @@ export const healthCheckApiGet = async ( options?: RequestInit): Promise<healthC
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: healthCheckApiGetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as healthCheckApiGetResponse
+  const data: healthCheckHeadResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as healthCheckHeadResponse
 }
 
 
 
 
+export const getHealthCheckHeadMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof healthCheckHead>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof healthCheckHead>>, TError,void, TContext> => {
 
-export const getHealthCheckApiGetQueryKey = () => {
-    return [
-    `/api`
-    ] as const;
-    }
+const mutationKey = ['healthCheckHead'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
 
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof healthCheckHead>>, void> = () => {
+          
+
+          return  healthCheckHead(fetchOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type HealthCheckHeadMutationResult = NonNullable<Awaited<ReturnType<typeof healthCheckHead>>>
     
-export const getHealthCheckApiGetQueryOptions = <TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>>, fetch?: RequestInit}
-) => {
+    export type HealthCheckHeadMutationError = unknown
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getHealthCheckApiGetQueryKey();
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheckApiGet>>> = ({ signal }) => healthCheckApiGet({ signal, ...fetchOptions });
-
-      
-
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type HealthCheckApiGetQueryResult = NonNullable<Awaited<ReturnType<typeof healthCheckApiGet>>>
-export type HealthCheckApiGetQueryError = unknown
-
-
-export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthCheckApiGet>>,
-          TError,
-          Awaited<ReturnType<typeof healthCheckApiGet>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof healthCheckApiGet>>,
-          TError,
-          Awaited<ReturnType<typeof healthCheckApiGet>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
+    /**
  * @summary Health Check
  */
-
-export function useHealthCheckApiGet<TData = Awaited<ReturnType<typeof healthCheckApiGet>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheckApiGet>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getHealthCheckApiGetQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
-
-
-
-/**
+export const useHealthCheckHead = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof healthCheckHead>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof healthCheckHead>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getHealthCheckHeadMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get Threads
  */
 export type getThreadsApiThreadsGetResponse200 = {
@@ -682,28 +653,28 @@ export function useGetMessagesApiThreadsThreadIdMessagesGet<TData = Awaited<Retu
 
 
 /**
- * @summary Chat Endpoint
+ * @summary Invoke
  */
-export type chatEndpointApiThreadsThreadIdMessagesPostResponse200 = {
+export type invokeApiThreadsThreadIdMessagesPostResponse200 = {
   data: unknown
   status: 200
 }
 
-export type chatEndpointApiThreadsThreadIdMessagesPostResponse422 = {
+export type invokeApiThreadsThreadIdMessagesPostResponse422 = {
   data: HTTPValidationError
   status: 422
 }
     
-export type chatEndpointApiThreadsThreadIdMessagesPostResponseSuccess = (chatEndpointApiThreadsThreadIdMessagesPostResponse200) & {
+export type invokeApiThreadsThreadIdMessagesPostResponseSuccess = (invokeApiThreadsThreadIdMessagesPostResponse200) & {
   headers: Headers;
 };
-export type chatEndpointApiThreadsThreadIdMessagesPostResponseError = (chatEndpointApiThreadsThreadIdMessagesPostResponse422) & {
+export type invokeApiThreadsThreadIdMessagesPostResponseError = (invokeApiThreadsThreadIdMessagesPostResponse422) & {
   headers: Headers;
 };
 
-export type chatEndpointApiThreadsThreadIdMessagesPostResponse = (chatEndpointApiThreadsThreadIdMessagesPostResponseSuccess | chatEndpointApiThreadsThreadIdMessagesPostResponseError)
+export type invokeApiThreadsThreadIdMessagesPostResponse = (invokeApiThreadsThreadIdMessagesPostResponseSuccess | invokeApiThreadsThreadIdMessagesPostResponseError)
 
-export const getChatEndpointApiThreadsThreadIdMessagesPostUrl = (threadId: string,) => {
+export const getInvokeApiThreadsThreadIdMessagesPostUrl = (threadId: string,) => {
 
 
   
@@ -711,10 +682,10 @@ export const getChatEndpointApiThreadsThreadIdMessagesPostUrl = (threadId: strin
   return `/api/threads/${threadId}/messages`
 }
 
-export const chatEndpointApiThreadsThreadIdMessagesPost = async (threadId: string,
-    postMessagesRequest: PostMessagesRequest, options?: RequestInit): Promise<chatEndpointApiThreadsThreadIdMessagesPostResponse> => {
+export const invokeApiThreadsThreadIdMessagesPost = async (threadId: string,
+    postMessagesRequest: PostMessagesRequest, options?: RequestInit): Promise<invokeApiThreadsThreadIdMessagesPostResponse> => {
   
-  const res = await fetch(getChatEndpointApiThreadsThreadIdMessagesPostUrl(threadId),
+  const res = await fetch(getInvokeApiThreadsThreadIdMessagesPostUrl(threadId),
   {      
     ...options,
     method: 'POST',
@@ -726,18 +697,18 @@ export const chatEndpointApiThreadsThreadIdMessagesPost = async (threadId: strin
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: chatEndpointApiThreadsThreadIdMessagesPostResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as chatEndpointApiThreadsThreadIdMessagesPostResponse
+  const data: invokeApiThreadsThreadIdMessagesPostResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as invokeApiThreadsThreadIdMessagesPostResponse
 }
 
 
 
 
-export const getChatEndpointApiThreadsThreadIdMessagesPostMutationOptions = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatEndpointApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof chatEndpointApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext> => {
+export const getInvokeApiThreadsThreadIdMessagesPostMutationOptions = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext> => {
 
-const mutationKey = ['chatEndpointApiThreadsThreadIdMessagesPost'];
+const mutationKey = ['invokeApiThreadsThreadIdMessagesPost'];
 const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -747,10 +718,10 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof chatEndpointApiThreadsThreadIdMessagesPost>>, {threadId: string;data: PostMessagesRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, {threadId: string;data: PostMessagesRequest}> = (props) => {
           const {threadId,data} = props ?? {};
 
-          return  chatEndpointApiThreadsThreadIdMessagesPost(threadId,data,fetchOptions)
+          return  invokeApiThreadsThreadIdMessagesPost(threadId,data,fetchOptions)
         }
 
 
@@ -760,21 +731,21 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type ChatEndpointApiThreadsThreadIdMessagesPostMutationResult = NonNullable<Awaited<ReturnType<typeof chatEndpointApiThreadsThreadIdMessagesPost>>>
-    export type ChatEndpointApiThreadsThreadIdMessagesPostMutationBody = PostMessagesRequest
-    export type ChatEndpointApiThreadsThreadIdMessagesPostMutationError = HTTPValidationError
+    export type InvokeApiThreadsThreadIdMessagesPostMutationResult = NonNullable<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>>
+    export type InvokeApiThreadsThreadIdMessagesPostMutationBody = PostMessagesRequest
+    export type InvokeApiThreadsThreadIdMessagesPostMutationError = HTTPValidationError
 
     /**
- * @summary Chat Endpoint
+ * @summary Invoke
  */
-export const useChatEndpointApiThreadsThreadIdMessagesPost = <TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof chatEndpointApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
+export const useInvokeApiThreadsThreadIdMessagesPost = <TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>, TError,{threadId: string;data: PostMessagesRequest}, TContext>, fetch?: RequestInit}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof chatEndpointApiThreadsThreadIdMessagesPost>>,
+        Awaited<ReturnType<typeof invokeApiThreadsThreadIdMessagesPost>>,
         TError,
         {threadId: string;data: PostMessagesRequest},
         TContext
       > => {
-      return useMutation(getChatEndpointApiThreadsThreadIdMessagesPostMutationOptions(options), queryClient);
+      return useMutation(getInvokeApiThreadsThreadIdMessagesPostMutationOptions(options), queryClient);
     }
     

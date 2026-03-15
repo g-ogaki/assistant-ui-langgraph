@@ -1,5 +1,5 @@
-from db import pool, create_db_and_tables
-from graph import create_graph
+from db import pool
+from graph import Agent
 from api.routes import api_router
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
@@ -10,8 +10,8 @@ load_dotenv()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await pool.open()
-    await create_db_and_tables()
-    app.state.agent = await create_graph()
+    app.state.agent = Agent()
+    await app.state.agent.initialize()
     yield
     await pool.close()
 

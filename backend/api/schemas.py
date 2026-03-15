@@ -1,14 +1,5 @@
-from typing import Literal
+from graph import Message
 from pydantic import BaseModel
-
-class Message(BaseModel):
-    type: Literal["human", "ai", "tool"]
-    content: str
-    id: str | None = None
-    tool_call_id: str | None = None
-    name: str | None = None
-    args: dict | None = None
-    output: str | None = None
 
 class ThreadInfo(BaseModel):
     thread_id: str
