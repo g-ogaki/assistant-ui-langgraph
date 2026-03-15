@@ -1,10 +1,7 @@
 from service import ChatService
 from api.routes import api_router
-from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-
-load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -23,4 +20,6 @@ app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn
+    from dotenv import load_dotenv
+    load_dotenv()
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)

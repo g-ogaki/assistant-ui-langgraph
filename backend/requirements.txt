@@ -1,4 +1,3 @@
-python-dotenv
 fastapi
 uvicorn
 sqlmodel
@@ -8,6 +7,7 @@ langchain-cloudflare
 langchain-postgres
 langgraph-checkpoint-postgres
 
-# For preprocess run locally
+# For local development
+# python-dotenv
 # pandas
 # langchain-text-splitters
